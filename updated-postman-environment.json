@@ -1,0 +1,105 @@
+{
+  "id": "c7a65d2e-f8c5-4d3a-9e12-345678abcdef",
+  "name": "Food Delivery System",
+  "values": [
+    {
+      "key": "gatewayUrl",
+      "value": "http://localhost:5000",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "userServiceUrl",
+      "value": "http://localhost:3001",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "restaurantServiceUrl",
+      "value": "http://localhost:3002",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "orderServiceUrl",
+      "value": "http://localhost:3003",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "deliveryServiceUrl",
+      "value": "http://localhost:3004",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "secret",
+      "enabled": true
+    },
+    {
+      "key": "adminToken",
+      "value": "",
+      "type": "secret",
+      "enabled": true
+    },
+    {
+      "key": "restaurantToken",
+      "value": "",
+      "type": "secret",
+      "enabled": true
+    },
+    {
+      "key": "deliveryToken",
+      "value": "",
+      "type": "secret",
+      "enabled": true
+    },
+    {
+      "key": "userId",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "adminId",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "newUserId",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "restaurantId",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "menuItemId",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "orderId",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "deliveryId",
+      "value": "",
+      "type": "default",
+      "enabled": true
+    }
+  ],
+  "_postman_variable_scope": "environment",
+  "_postman_exported_at": "2023-06-10T14:30:00.000Z",
+  "_postman_exported_using": "Postman/10.14.0"
+} 

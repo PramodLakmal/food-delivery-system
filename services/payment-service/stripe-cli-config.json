@@ -1,0 +1,6 @@
+{
+  "webhook_endpoint": {
+    "url": "http://localhost:5004/api/payments/webhook",
+    "api_version": "2023-10-16"
+  }
+} 

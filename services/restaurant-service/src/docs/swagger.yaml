@@ -1,0 +1,25 @@
+openapi: 3.0.0
+info:
+  title: Restaurant Microservice API
+  version: 1.0.0
+paths:
+  /api/menu/{restaurantId}:
+    get:
+      summary: Get menu items for a restaurant
+      parameters:
+        - name: restaurantId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of menu items

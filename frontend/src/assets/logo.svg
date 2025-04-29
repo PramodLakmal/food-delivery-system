@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Circle -->
+  <circle cx="100" cy="100" r="95" fill="url(#gradient)" />
+  
+  <!-- Plate/Dish -->
+  <circle cx="100" cy="100" r="65" fill="white" stroke="#E2E8F0" stroke-width="2" />
+  
+  <!-- Fork -->
+  <path d="M70 60C70 60 70 90 70 100C70 110 80 115 80 125C80 135 70 140 70 140" stroke="#4A5568" stroke-width="5" stroke-linecap="round" />
+  <path d="M60 60C60 60 60 90 60 100C60 110 70 115 70 125C70 135 60 140 60 140" stroke="#4A5568" stroke-width="5" stroke-linecap="round" />
+  <path d="M50 60C50 60 50 90 50 100C50 110 60 115 60 125C60 135 50 140 50 140" stroke="#4A5568" stroke-width="5" stroke-linecap="round" />
+  
+  <!-- Knife -->
+  <path d="M130 60C130 60 140 90 140 100C140 110 130 115 130 125C130 135 140 140 140 140" stroke="#4A5568" stroke-width="5" stroke-linecap="round" />
+  <path d="M130 60C130 60 155 70 155 85C155 100 130 125 130 125" stroke="#4A5568" stroke-width="5" stroke-linecap="round" />
+  
+  <!-- Steam -->
+  <path d="M85 50C90 40 95 45 95 50" stroke="#CBD5E0" stroke-width="3" stroke-linecap="round" />
+  <path d="M100 45C105 35 110 40 110 45" stroke="#CBD5E0" stroke-width="3" stroke-linecap="round" />
+  <path d="M115 50C120 40 125 45 125 50" stroke="#CBD5E0" stroke-width="3" stroke-linecap="round" />
+  
+  <!-- Gradient Definition -->
+  <defs>
+    <linearGradient id="gradient" x1="0" y1="0" x2="200" y2="200" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#3182CE" />
+      <stop offset="100%" stop-color="#805AD5" />
+    </linearGradient>
+  </defs>
+</svg> 

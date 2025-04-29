@@ -1,0 +1,1597 @@
+{
+  "info": {
+    "_postman_id": "f8c5e6d7-a9b8-4c0d-b123-456789abcdef",
+    "name": "Food Delivery System",
+    "description": "Complete API collection for testing the Food Delivery System microservices",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "API Gateway",
+      "item": [
+        {
+          "name": "Health & Debug",
+          "item": [
+            {
+              "name": "Gateway Health Check",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{gatewayUrl}}/api/health",
+                  "host": [
+                    "{{gatewayUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "health"
+                  ]
+                },
+                "description": "Check if the API Gateway is running"
+              },
+              "response": []
+            },
+            {
+              "name": "Gateway Debug",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{gatewayUrl}}/api/debug",
+                  "host": [
+                    "{{gatewayUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "debug"
+                  ]
+                },
+                "description": "Check environment variables and service URLs"
+              },
+              "response": []
+            },
+            {
+              "name": "Gateway Test Proxy",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{gatewayUrl}}/api/test-proxy",
+                  "host": [
+                    "{{gatewayUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "test-proxy"
+                  ]
+                },
+                "description": "Test proxy functionality"
+              },
+              "response": []
+            },
+            {
+              "name": "404 Not Found Test",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{gatewayUrl}}/api/nonexistent",
+                  "host": [
+                    "{{gatewayUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "nonexistent"
+                  ]
+                },
+                "description": "Test API Gateway 404 handler"
+              },
+              "response": []
+            }
+          ],
+          "description": "Gateway health and debug endpoints"
+        },
+        {
+          "name": "User Management",
+          "item": [
+            {
+              "name": "Register User",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "var jsonData = pm.response.json();",
+                      "",
+                      "pm.test(\"Status code is 201\", function () {",
+                      "    pm.response.to.have.status(201);",
+                      "});",
+                      "",
+                      "pm.test(\"Response has token\", function () {",
+                      "    pm.expect(jsonData.token).to.not.be.undefined;",
+                      "});",
+                      "",
+                      "if (jsonData.token) {",
+                      "    pm.environment.set(\"authToken\", jsonData.token);",
+                      "    pm.environment.set(\"userId\", jsonData.user.id);",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"Test User\",\n    \"email\": \"test@example.com\",\n    \"phone\": \"1234567890\",\n    \"password\": \"password123\",\n    \"address\": {\n        \"street\": \"123 Test St\",\n        \"city\": \"Test City\",\n        \"state\": \"Test State\",\n        \"postalCode\": \"12345\",\n        \"country\": \"Test Country\"\n    },\n    \"role\": \"customer\"\n}"
+                },
+                "url": {
+                  "raw": "{{gatewayUrl}}/api/users/register",
+                  "host": [
+                    "{{gatewayUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "users",
+                    "register"
+                  ]
+                },
+                "description": "Register a new user"
+              },
+              "response": []
+            },
+            {
+              "name": "Register Restaurant Admin",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "var jsonData = pm.response.json();",
+                      "",
+                      "pm.test(\"Status code is 201\", function () {",
+                      "    pm.response.to.have.status(201);",
+                      "});",
+                      "",
+                      "pm.test(\"Response has token\", function () {",
+                      "    pm.expect(jsonData.token).to.not.be.undefined;",
+                      "});",
+                      "",
+                      "if (jsonData.token) {",
+                      "    pm.environment.set(\"restaurantToken\", jsonData.token);",
+                      "    pm.environment.set(\"restaurantAdminId\", jsonData.user.id);",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"Restaurant Admin\",\n    \"email\": \"restaurant@example.com\",\n    \"phone\": \"5554443333\",\n    \"password\": \"password123\",\n    \"address\": {\n        \"street\": \"456 Restaurant St\",\n        \"city\": \"Restaurant City\",\n        \"state\": \"Restaurant State\",\n        \"postalCode\": \"54321\",\n        \"country\": \"Restaurant Country\"\n    },\n    \"role\": \"restaurant-admin\"\n}"
+                },
+                "url": {
+                  "raw": "{{gatewayUrl}}/api/users/register",
+                  "host": [
+                    "{{gatewayUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "users",
+                    "register"
+                  ]
+                },
+                "description": "Register a restaurant admin"
+              },
+              "response": []
+            },
+            {
+              "name": "Register Delivery Person",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "var jsonData = pm.response.json();",
+                      "",
+                      "pm.test(\"Status code is 201\", function () {",
+                      "    pm.response.to.have.status(201);",
+                      "});",
+                      "",
+                      "pm.test(\"Response has token\", function () {",
+                      "    pm.expect(jsonData.token).to.not.be.undefined;",
+                      "});",
+                      "",
+                      "if (jsonData.token) {",
+                      "    pm.environment.set(\"deliveryToken\", jsonData.token);",
+                      "    pm.environment.set(\"deliveryPersonId\", jsonData.user.id);",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"Delivery Person\",\n    \"email\": \"delivery@example.com\",\n    \"phone\": \"7778889999\",\n    \"password\": \"password123\",\n    \"address\": {\n        \"street\": \"789 Delivery St\",\n        \"city\": \"Delivery City\",\n        \"state\": \"Delivery State\",\n        \"postalCode\": \"98765\",\n        \"country\": \"Delivery Country\"\n    },\n    \"role\": \"delivery-person\"\n}"
+                },
+                "url": {
+                  "raw": "{{gatewayUrl}}/api/users/register",
+                  "host": [
+                    "{{gatewayUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "users",
+                    "register"
+                  ]
+                },
+                "description": "Register a delivery person"
+              },
+              "response": []
+            },
+            {
+              "name": "Login User",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "var jsonData = pm.response.json();",
+                      "",
+                      "pm.test(\"Status code is 200\", function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "pm.test(\"Response has token\", function () {",
+                      "    pm.expect(jsonData.token).to.not.be.undefined;",
+                      "});",
+                      "",
+                      "if (jsonData.token) {",
+                      "    pm.environment.set(\"authToken\", jsonData.token);",
+                      "    pm.environment.set(\"userId\", jsonData.user.id);",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"email\": \"test@example.com\",\n    \"password\": \"password123\"\n}"
+                },
+                "url": {
+                  "raw": "{{gatewayUrl}}/api/users/login",
+                  "host": [
+                    "{{gatewayUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "users",
+                    "login"
+                  ]
+                },
+                "description": "Login a user"
+              },
+              "response": []
+            },
+            {
+              "name": "Login Admin",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "var jsonData = pm.response.json();",
+                      "",
+                      "pm.test(\"Status code is 200\", function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "pm.test(\"Response has token\", function () {",
+                      "    pm.expect(jsonData.token).to.not.be.undefined;",
+                      "});",
+                      "",
+                      "if (jsonData.token) {",
+                      "    pm.environment.set(\"adminToken\", jsonData.token);",
+                      "    pm.environment.set(\"adminId\", jsonData.user.id);",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"email\": \"admin@example.com\",\n    \"password\": \"admin123\"\n}"
+                },
+                "url": {
+                  "raw": "{{gatewayUrl}}/api/users/login",
+                  "host": [
+                    "{{gatewayUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "users",
+                    "login"
+                  ]
+                },
+                "description": "Login an admin user"
+              },
+              "response": []
+            },
+            {
+              "name": "Login Restaurant Admin",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "var jsonData = pm.response.json();",
+                      "",
+                      "pm.test(\"Status code is 200\", function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "pm.test(\"Response has token\", function () {",
+                      "    pm.expect(jsonData.token).to.not.be.undefined;",
+                      "});",
+                      "",
+                      "if (jsonData.token) {",
+                      "    pm.environment.set(\"restaurantToken\", jsonData.token);",
+                      "    pm.environment.set(\"restaurantAdminId\", jsonData.user.id);",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"email\": \"restaurant@example.com\",\n    \"password\": \"password123\"\n}"
+                },
+                "url": {
+                  "raw": "{{gatewayUrl}}/api/users/login",
+                  "host": [
+                    "{{gatewayUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "users",
+                    "login"
+                  ]
+                },
+                "description": "Login as restaurant admin"
+              },
+              "response": []
+            },
+            {
+              "name": "Login Delivery Person",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "var jsonData = pm.response.json();",
+                      "",
+                      "pm.test(\"Status code is 200\", function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "pm.test(\"Response has token\", function () {",
+                      "    pm.expect(jsonData.token).to.not.be.undefined;",
+                      "});",
+                      "",
+                      "if (jsonData.token) {",
+                      "    pm.environment.set(\"deliveryToken\", jsonData.token);",
+                      "    pm.environment.set(\"deliveryPersonId\", jsonData.user.id);",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"email\": \"delivery@example.com\",\n    \"password\": \"password123\"\n}"
+                },
+                "url": {
+                  "raw": "{{gatewayUrl}}/api/users/login",
+                  "host": [
+                    "{{gatewayUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "users",
+                    "login"
+                  ]
+                },
+                "description": "Login as delivery person"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Current User",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status code is 200\", function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "pm.test(\"Response has user data\", function () {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.success).to.eql(true);",
+                      "    pm.expect(jsonData.data).to.not.be.undefined;",
+                      "});"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{authToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{gatewayUrl}}/api/users/me",
+                  "host": [
+                    "{{gatewayUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "users",
+                    "me"
+                  ]
+                },
+                "description": "Get current user details"
+              },
+              "response": []
+            },
+            {
+              "name": "Update User Details",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status code is 200\", function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "pm.test(\"Response has updated user data\", function () {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.success).to.eql(true);",
+                      "    pm.expect(jsonData.data).to.not.be.undefined;",
+                      "});"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{authToken}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"Updated User Name\",\n    \"email\": \"updated@example.com\",\n    \"phone\": \"5555555555\",\n    \"address\": {\n        \"street\": \"Updated Street\",\n        \"city\": \"Updated City\",\n        \"state\": \"Updated State\",\n        \"postalCode\": \"54321\",\n        \"country\": \"Updated Country\"\n    }\n}"
+                },
+                "url": {
+                  "raw": "{{gatewayUrl}}/api/users/update-details",
+                  "host": [
+                    "{{gatewayUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "users",
+                    "update-details"
+                  ]
+                },
+                "description": "Update current user details"
+              },
+              "response": []
+            },
+            {
+              "name": "Update User Password",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status code is 200\", function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "pm.test(\"Password updated successfully\", function () {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.success).to.eql(true);",
+                      "});"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{authToken}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"currentPassword\": \"password123\",\n    \"newPassword\": \"newpassword123\"\n}"
+                },
+                "url": {
+                  "raw": "{{gatewayUrl}}/api/users/update-password",
+                  "host": [
+                    "{{gatewayUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "users",
+                    "update-password"
+                  ]
+                },
+                "description": "Update current user password"
+              },
+              "response": []
+            }
+          ],
+          "description": "User authentication and profile management endpoints"
+        },
+        {
+          "name": "Admin Routes",
+          "item": [
+            {
+              "name": "Get All Users",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status code is 200\", function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "pm.test(\"Response has users data\", function () {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.success).to.eql(true);",
+                      "    pm.expect(jsonData.data).to.be.an('array');",
+                      "});"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{adminToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{gatewayUrl}}/api/users",
+                  "host": [
+                    "{{gatewayUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "users"
+                  ]
+                },
+                "description": "Get all users (admin only)"
+              },
+              "response": []
+            },
+            {
+              "name": "Get User by ID",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status code is 200\", function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "pm.test(\"Response has user data\", function () {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.success).to.eql(true);",
+                      "    pm.expect(jsonData.data).to.not.be.undefined;",
+                      "});"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{adminToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{gatewayUrl}}/api/users/{{userId}}",
+                  "host": [
+                    "{{gatewayUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "users",
+                    "{{userId}}"
+                  ]
+                },
+                "description": "Get user by ID (admin only)"
+              },
+              "response": []
+            },
+            {
+              "name": "Create User (Admin)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status code is 201\", function () {",
+                      "    pm.response.to.have.status(201);",
+                      "});",
+                      "",
+                      "pm.test(\"Response has user data\", function () {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.success).to.eql(true);",
+                      "    pm.expect(jsonData.data).to.not.be.undefined;",
+                      "});",
+                      "",
+                      "var jsonData = pm.response.json();",
+                      "if (jsonData.data && jsonData.data.id) {",
+                      "    pm.environment.set(\"newUserId\", jsonData.data.id);",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{adminToken}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"New User\",\n    \"email\": \"newuser@example.com\",\n    \"phone\": \"1122334455\",\n    \"password\": \"password123\",\n    \"address\": {\n        \"street\": \"789 New St\",\n        \"city\": \"New City\",\n        \"state\": \"New State\",\n        \"postalCode\": \"67890\",\n        \"country\": \"New Country\"\n    },\n    \"role\": \"customer\"\n}"
+                },
+                "url": {
+                  "raw": "{{gatewayUrl}}/api/users",
+                  "host": [
+                    "{{gatewayUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "users"
+                  ]
+                },
+                "description": "Create a user (admin only)"
+              },
+              "response": []
+            },
+            {
+              "name": "Update User (Admin)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status code is 200\", function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "pm.test(\"Response has updated user data\", function () {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.success).to.eql(true);",
+                      "    pm.expect(jsonData.data).to.not.be.undefined;",
+                      "});"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{adminToken}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"Updated By Admin\",\n    \"email\": \"updated-by-admin@example.com\",\n    \"phone\": \"9988776655\",\n    \"address\": {\n        \"street\": \"Admin Updated Street\",\n        \"city\": \"Admin Updated City\",\n        \"state\": \"Admin Updated State\",\n        \"postalCode\": \"12345\",\n        \"country\": \"Admin Updated Country\"\n    },\n    \"role\": \"customer\"\n}"
+                },
+                "url": {
+                  "raw": "{{gatewayUrl}}/api/users/{{newUserId}}",
+                  "host": [
+                    "{{gatewayUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "users",
+                    "{{newUserId}}"
+                  ]
+                },
+                "description": "Update a user (admin only)"
+              },
+              "response": []
+            },
+            {
+              "name": "Delete User",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status code is 200\", function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "pm.test(\"Response confirms deletion\", function () {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.expect(jsonData.success).to.eql(true);",
+                      "});"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{adminToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{gatewayUrl}}/api/users/{{newUserId}}",
+                  "host": [
+                    "{{gatewayUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "users",
+                    "{{newUserId}}"
+                  ]
+                },
+                "description": "Delete a user (admin only)"
+              },
+              "response": []
+            }
+          ],
+          "description": "Admin-only endpoints for user management"
+        }
+      ],
+      "description": "API Gateway endpoints for testing the gateway functionality"
+    },
+    {
+      "name": "Restaurant Service",
+      "item": [
+        {
+          "name": "Health & Connectivity",
+          "item": [
+            {
+              "name": "Restaurant Service Test",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{gatewayUrl}}/api/restaurants/test",
+                  "host": [
+                    "{{gatewayUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "restaurants",
+                    "test"
+                  ]
+                },
+                "description": "Test connectivity to Restaurant Service"
+              },
+              "response": []
+            },
+            {
+              "name": "Restaurant System Stats",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{gatewayUrl}}/api/restaurants/stats",
+                  "host": [
+                    "{{gatewayUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "restaurants",
+                    "stats"
+                  ]
+                },
+                "description": "Get system statistics from Restaurant Service"
+              },
+              "response": []
+            }
+          ],
+          "description": "Health check and connectivity endpoints for Restaurant Service"
+        },
+        {
+          "name": "Restaurant Management",
+          "item": [
+            {
+              "name": "Get All Restaurants",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status code is 200\", function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "var jsonData = pm.response.json();",
+                      "if (jsonData.data && jsonData.data.length > 0) {",
+                      "    pm.environment.set(\"restaurantId\", jsonData.data[0]._id);",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{gatewayUrl}}/api/restaurants",
+                  "host": [
+                    "{{gatewayUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "restaurants"
+                  ]
+                },
+                "description": "Get list of all restaurants"
+              },
+              "response": []
+            },
+            {
+              "name": "Get My Restaurants",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status code is 200\", function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "var jsonData = pm.response.json();",
+                      "if (jsonData.data && jsonData.data.length > 0) {",
+                      "    pm.environment.set(\"myRestaurantId\", jsonData.data[0]._id);",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{restaurantToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{gatewayUrl}}/api/restaurants/my-restaurants",
+                  "host": [
+                    "{{gatewayUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "restaurants",
+                    "my-restaurants"
+                  ]
+                },
+                "description": "Get restaurants owned by the logged in restaurant admin"
+              },
+              "response": []
+            },
+            {
+              "name": "Get Restaurant Details",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{gatewayUrl}}/api/restaurants/{{restaurantId}}",
+                  "host": [
+                    "{{gatewayUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "restaurants",
+                    "{{restaurantId}}"
+                  ]
+                },
+                "description": "Get details of a specific restaurant"
+              },
+              "response": []
+            },
+            {
+              "name": "Create Restaurant (Restaurant Admin)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status code is 201\", function () {",
+                      "    pm.response.to.have.status(201);",
+                      "});",
+                      "",
+                      "var jsonData = pm.response.json();",
+                      "if (jsonData.data && jsonData.data._id) {",
+                      "    pm.environment.set(\"myRestaurantId\", jsonData.data._id);",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{restaurantToken}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"My Restaurant\",\n    \"location\": \"123 Restaurant Street, City, Country\",\n    \"cuisine\": \"International\",\n    \"rating\": 4.5\n}"
+                },
+                "url": {
+                  "raw": "{{gatewayUrl}}/api/restaurants",
+                  "host": [
+                    "{{gatewayUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "restaurants"
+                  ]
+                },
+                "description": "Create a new restaurant as restaurant admin"
+              },
+              "response": []
+            },
+            {
+              "name": "Update Restaurant (Restaurant Admin)",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{restaurantToken}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"Updated Restaurant Name\",\n    \"location\": \"456 Updated Street, City, Country\",\n    \"cuisine\": \"Fusion\",\n    \"rating\": 4.8,\n    \"isAvailable\": true\n}"
+                },
+                "url": {
+                  "raw": "{{gatewayUrl}}/api/restaurants/{{myRestaurantId}}",
+                  "host": [
+                    "{{gatewayUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "restaurants",
+                    "{{myRestaurantId}}"
+                  ]
+                },
+                "description": "Update a restaurant owned by the restaurant admin"
+              },
+              "response": []
+            },
+            {
+              "name": "Delete Restaurant (Restaurant Admin)",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{restaurantToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{gatewayUrl}}/api/restaurants/{{myRestaurantId}}",
+                  "host": [
+                    "{{gatewayUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "restaurants",
+                    "{{myRestaurantId}}"
+                  ]
+                },
+                "description": "Delete a restaurant owned by the restaurant admin"
+              },
+              "response": []
+            }
+          ],
+          "description": "API endpoints for restaurant management"
+        },
+        {
+          "name": "Menu Management",
+          "item": [
+            {
+              "name": "Get Menu Items by Restaurant",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status code is 200\", function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "var jsonData = pm.response.json();",
+                      "if (jsonData.data && jsonData.data.length > 0) {",
+                      "    pm.environment.set(\"menuItemId\", jsonData.data[0]._id);",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{gatewayUrl}}/api/restaurants/{{restaurantId}}/menu",
+                  "host": [
+                    "{{gatewayUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "restaurants",
+                    "{{restaurantId}}",
+                    "menu"
+                  ]
+                },
+                "description": "Get all menu items for a specific restaurant"
+              },
+              "response": []
+            },
+            {
+              "name": "Create Menu Item (Restaurant Admin)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status code is 201\", function () {",
+                      "    pm.response.to.have.status(201);",
+                      "});",
+                      "",
+                      "var jsonData = pm.response.json();",
+                      "if (jsonData.data && jsonData.data._id) {",
+                      "    pm.environment.set(\"myMenuItemId\", jsonData.data._id);",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{restaurantToken}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"Signature Dish\",\n    \"price\": 12.99,\n    \"category\": \"Main Course\",\n    \"description\": \"Our award-winning signature dish\",\n    \"availability\": true\n}"
+                },
+                "url": {
+                  "raw": "{{gatewayUrl}}/api/restaurants/{{myRestaurantId}}/menu",
+                  "host": [
+                    "{{gatewayUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "restaurants",
+                    "{{myRestaurantId}}",
+                    "menu"
+                  ]
+                },
+                "description": "Create a new menu item for a restaurant owned by the restaurant admin"
+              },
+              "response": []
+            },
+            {
+              "name": "Bulk Create Menu Items (Restaurant Admin)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{restaurantToken}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"items\": [\n        {\n            \"name\": \"Appetizer Sampler\",\n            \"price\": 8.99,\n            \"category\": \"Appetizer\",\n            \"description\": \"A selection of our best appetizers\",\n            \"availability\": true\n        },\n        {\n            \"name\": \"House Salad\",\n            \"price\": 6.99,\n            \"category\": \"Salad\",\n            \"description\": \"Fresh greens with house dressing\",\n            \"availability\": true\n        },\n        {\n            \"name\": \"Chocolate Dessert\",\n            \"price\": 7.99,\n            \"category\": \"Dessert\",\n            \"description\": \"Rich chocolate dessert\",\n            \"availability\": true\n        }\n    ]\n}"
+                },
+                "url": {
+                  "raw": "{{gatewayUrl}}/api/restaurants/{{myRestaurantId}}/menu/bulk",
+                  "host": [
+                    "{{gatewayUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "restaurants",
+                    "{{myRestaurantId}}",
+                    "menu",
+                    "bulk"
+                  ]
+                },
+                "description": "Create multiple menu items at once for a restaurant owned by the restaurant admin"
+              },
+              "response": []
+            },
+            {
+              "name": "Update Menu Item (Restaurant Admin)",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{restaurantToken}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"Updated Dish Name\",\n    \"price\": 14.99,\n    \"category\": \"Main Course\",\n    \"description\": \"Updated description for this dish\",\n    \"availability\": true\n}"
+                },
+                "url": {
+                  "raw": "{{gatewayUrl}}/api/restaurants/{{myRestaurantId}}/menu/{{myMenuItemId}}",
+                  "host": [
+                    "{{gatewayUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "restaurants",
+                    "{{myRestaurantId}}",
+                    "menu",
+                    "{{myMenuItemId}}"
+                  ]
+                },
+                "description": "Update a menu item for a restaurant owned by the restaurant admin"
+              },
+              "response": []
+            },
+            {
+              "name": "Update Menu Item Availability (Restaurant Admin)",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{restaurantToken}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"availability\": false\n}"
+                },
+                "url": {
+                  "raw": "{{gatewayUrl}}/api/restaurants/{{myRestaurantId}}/menu/{{myMenuItemId}}/availability",
+                  "host": [
+                    "{{gatewayUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "restaurants",
+                    "{{myRestaurantId}}",
+                    "menu",
+                    "{{myMenuItemId}}",
+                    "availability"
+                  ]
+                },
+                "description": "Update the availability of a menu item for a restaurant owned by the restaurant admin"
+              },
+              "response": []
+            },
+            {
+              "name": "Delete Menu Item (Restaurant Admin)",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{restaurantToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{gatewayUrl}}/api/restaurants/{{myRestaurantId}}/menu/{{myMenuItemId}}",
+                  "host": [
+                    "{{gatewayUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "restaurants",
+                    "{{myRestaurantId}}",
+                    "menu",
+                    "{{myMenuItemId}}"
+                  ]
+                },
+                "description": "Delete a menu item for a restaurant owned by the restaurant admin"
+              },
+              "response": []
+            }
+          ],
+          "description": "API endpoints for menu management"
+        }
+      ],
+      "description": "Restaurant Service endpoints accessed through the API Gateway"
+    }
+  ]
+} 
+        {
+          "name": "Menu Management",
+          "item": [
+            {
+              "name": "Get Menu Items by Restaurant",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status code is 200\", function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "",
+                      "var jsonData = pm.response.json();",
+                      "if (jsonData.data && jsonData.data.length > 0) {",
+                      "    pm.environment.set(\"menuItemId\", jsonData.data[0]._id);",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{gatewayUrl}}/api/restaurants/{{restaurantId}}/menu",
+                  "host": [
+                    "{{gatewayUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "restaurants",
+                    "{{restaurantId}}",
+                    "menu"
+                  ]
+                },
+                "description": "Get all menu items for a specific restaurant"
+              },
+              "response": []
+            },
+            {
+              "name": "Create Menu Item (Restaurant Admin)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status code is 201\", function () {",
+                      "    pm.response.to.have.status(201);",
+                      "});",
+                      "",
+                      "var jsonData = pm.response.json();",
+                      "if (jsonData.data && jsonData.data._id) {",
+                      "    pm.environment.set(\"myMenuItemId\", jsonData.data._id);",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{restaurantToken}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"Signature Dish\",\n    \"price\": 12.99,\n    \"category\": \"Main Course\",\n    \"description\": \"Our award-winning signature dish\",\n    \"availability\": true\n}"
+                },
+                "url": {
+                  "raw": "{{gatewayUrl}}/api/restaurants/{{myRestaurantId}}/menu",
+                  "host": [
+                    "{{gatewayUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "restaurants",
+                    "{{myRestaurantId}}",
+                    "menu"
+                  ]
+                },
+                "description": "Create a new menu item for a restaurant owned by the restaurant admin"
+              },
+              "response": []
+            },
+            {
+              "name": "Bulk Create Menu Items (Restaurant Admin)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{restaurantToken}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"items\": [\n        {\n            \"name\": \"Appetizer Sampler\",\n            \"price\": 8.99,\n            \"category\": \"Appetizer\",\n            \"description\": \"A selection of our best appetizers\",\n            \"availability\": true\n        },\n        {\n            \"name\": \"House Salad\",\n            \"price\": 6.99,\n            \"category\": \"Salad\",\n            \"description\": \"Fresh greens with house dressing\",\n            \"availability\": true\n        },\n        {\n            \"name\": \"Chocolate Dessert\",\n            \"price\": 7.99,\n            \"category\": \"Dessert\",\n            \"description\": \"Rich chocolate dessert\",\n            \"availability\": true\n        }\n    ]\n}"
+                },
+                "url": {
+                  "raw": "{{gatewayUrl}}/api/restaurants/{{myRestaurantId}}/menu/bulk",
+                  "host": [
+                    "{{gatewayUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "restaurants",
+                    "{{myRestaurantId}}",
+                    "menu",
+                    "bulk"
+                  ]
+                },
+                "description": "Create multiple menu items at once for a restaurant owned by the restaurant admin"
+              },
+              "response": []
+            },
+            {
+              "name": "Update Menu Item (Restaurant Admin)",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{restaurantToken}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"Updated Dish Name\",\n    \"price\": 14.99,\n    \"category\": \"Main Course\",\n    \"description\": \"Updated description for this dish\",\n    \"availability\": true\n}"
+                },
+                "url": {
+                  "raw": "{{gatewayUrl}}/api/restaurants/{{myRestaurantId}}/menu/{{myMenuItemId}}",
+                  "host": [
+                    "{{gatewayUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "restaurants",
+                    "{{myRestaurantId}}",
+                    "menu",
+                    "{{myMenuItemId}}"
+                  ]
+                },
+                "description": "Update a menu item for a restaurant owned by the restaurant admin"
+              },
+              "response": []
+            },
+            {
+              "name": "Update Menu Item Availability (Restaurant Admin)",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{restaurantToken}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"availability\": false\n}"
+                },
+                "url": {
+                  "raw": "{{gatewayUrl}}/api/restaurants/{{myRestaurantId}}/menu/{{myMenuItemId}}/availability",
+                  "host": [
+                    "{{gatewayUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "restaurants",
+                    "{{myRestaurantId}}",
+                    "menu",
+                    "{{myMenuItemId}}",
+                    "availability"
+                  ]
+                },
+                "description": "Update the availability of a menu item for a restaurant owned by the restaurant admin"
+              },
+              "response": []
+            },
+            {
+              "name": "Delete Menu Item (Restaurant Admin)",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{restaurantToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{gatewayUrl}}/api/restaurants/{{myRestaurantId}}/menu/{{myMenuItemId}}",
+                  "host": [
+                    "{{gatewayUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "restaurants",
+                    "{{myRestaurantId}}",
+                    "menu",
+                    "{{myMenuItemId}}"
+                  ]
+                },
+                "description": "Delete a menu item for a restaurant owned by the restaurant admin"
+              },
+              "response": []
+            }
+          ],
+          "description": "API endpoints for menu management"
+        }
+      ],
+      "description": "Restaurant Service endpoints accessed through the API Gateway"
+    }
+  ]
+} 

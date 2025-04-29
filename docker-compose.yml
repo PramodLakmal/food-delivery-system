@@ -1,0 +1,200 @@
+version: '3.8'
+
+services:
+  # MongoDB
+  mongo:
+    image: mongo:5.0
+    container_name: food-delivery-mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+    networks:
+      - food-delivery-network
+
+  # User Service
+  user-service:
+    build:
+      context: ./services/user-service
+      dockerfile: Dockerfile
+    container_name: food-delivery-user-service
+    restart: always
+    ports:
+      - "3001:3001"
+    env_file:
+      - ./services/user-service/.env.docker
+    depends_on:
+      mongo:
+        condition: service_healthy
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:3001/api/users/test || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    networks:
+      - food-delivery-network
+
+  # Restaurant Service
+  restaurant-service:
+    build:
+      context: ./services/restaurant-service
+      dockerfile: Dockerfile
+    container_name: food-delivery-restaurant-service
+    restart: always
+    ports:
+      - "3002:3002"
+    env_file:
+      - ./services/restaurant-service/.env.docker
+    depends_on:
+      mongo:
+        condition: service_healthy
+      user-service:
+        condition: service_started
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:3002 || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    networks:
+      - food-delivery-network
+
+  # Order Service
+  order-service:
+    build:
+      context: ./services/order-service
+      dockerfile: Dockerfile
+    container_name: food-delivery-order-service
+    restart: always
+    ports:
+      - "3003:3003"
+    env_file:
+      - ./services/order-service/.env.docker
+    depends_on:
+      mongo:
+        condition: service_healthy
+      user-service:
+        condition: service_started
+      restaurant-service:
+        condition: service_started
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:3003 || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    networks:
+      - food-delivery-network
+
+  # Delivery Service
+  delivery-service:
+    build:
+      context: ./services/delivery-service
+      dockerfile: Dockerfile
+    container_name: food-delivery-delivery-service
+    restart: always
+    ports:
+      - "3004:3004"
+    env_file:
+      - ./services/delivery-service/.env.docker
+    depends_on:
+      mongo:
+        condition: service_healthy
+      order-service:
+        condition: service_started
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:3004 || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    networks:
+      - food-delivery-network
+
+  # Payment Service
+  payment-service:
+    build:
+      context: ./services/payment-service
+      dockerfile: Dockerfile
+    container_name: food-delivery-payment-service
+    restart: always
+    ports:
+      - "3005:3005"
+    env_file:
+      - ./services/payment-service/.env.docker
+    depends_on:
+      mongo:
+        condition: service_healthy
+      order-service:
+        condition: service_started
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:3005 || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    networks:
+      - food-delivery-network
+
+  # API Gateway
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    container_name: food-delivery-api-gateway
+    restart: always
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./api-gateway/.env.docker
+    depends_on:
+      user-service:
+        condition: service_started
+      restaurant-service:
+        condition: service_started
+      order-service:
+        condition: service_started
+      delivery-service:
+        condition: service_started
+      payment-service:
+        condition: service_started
+    healthcheck:
+      test: curl -f http://localhost:5000/api || wget --no-verbose --tries=1 --spider http://localhost:5000/api || exit 0
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    networks:
+      - food-delivery-network
+
+  # Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: food-delivery-frontend
+    restart: always
+    ports:
+      - "5173:5173"
+    depends_on:
+      api-gateway:
+        condition: service_started
+    networks:
+      - food-delivery-network
+
+volumes:
+  mongodb_data:
+    name: food-delivery-mongodb-data
+
+networks:
+  food-delivery-network:
+    name: food-delivery-network
+    driver: bridge 
