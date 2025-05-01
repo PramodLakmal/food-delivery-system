@@ -12,7 +12,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
       with:
-        fetch-depth: 0  # Get full repo without truncating
+        fetch-depth: 0
     
     - name: Install SSH key
       uses: shimataro/ssh-key-action@v2
@@ -25,8 +25,14 @@ jobs:
       
     - name: Prepare deployment files
       run: |
-        # Create a deployment archive without .git directory
-        tar --exclude='.git' --exclude='node_modules' -czf deploy.tar.gz .
+        # Create a deployment directory and copy files there
+        mkdir -p deploy_temp
+        cp -r $(ls -A | grep -v ".git" | grep -v "node_modules" | xargs) deploy_temp/
+        
+        # Create a deployment archive
+        cd deploy_temp
+        tar -czf ../deploy.tar.gz .
+        cd ..
         
     - name: Deploy to EC2
       run: |
@@ -41,14 +47,46 @@ jobs:
           tar -xzf deploy.tar.gz && \
           rm deploy.tar.gz && \
           
-          # Create production environment files
-          mkdir -p ./services/user-service/.env.production ./services/restaurant-service/.env.production && \
+          # Create necessary directories for env files if they don't exist
+          mkdir -p ./services/user-service ./services/restaurant-service ./services/order-service ./services/payment-service ./services/delivery-service ./api-gateway ./frontend && \
           
-          # Update MongoDB URI in environment files
-          find ./services -name '.env*' -type f -exec sed -i 's|mongodb://mongo:27017|mongodb://localhost:27017|g' {} \; && \
+          # Create production environment files for each service if they don't exist
+          if [ ! -f ./api-gateway/.env.production ]; then
+            echo 'PORT=5000
+NODE_ENV=production
+USER_SERVICE_URL=http://user-service:3001
+RESTAURANT_SERVICE_URL=http://restaurant-service:3002
+ORDER_SERVICE_URL=http://order-service:3003
+DELIVERY_SERVICE_URL=http://delivery-service:3005
+PAYMENT_SERVICE_URL=http://payment-service:3004' > ./api-gateway/.env.production
+          fi
+          
+          if [ ! -f ./frontend/.env.production ]; then
+            echo 'VITE_API_URL=http://localhost:5000/api
+VITE_GOOGLE_MAPS_API_KEY=AIzaSyAiCPCA5qirrWS723VqS_RLBha4d_rTYkA' > ./frontend/.env.production
+          fi
+          
+          # Similar environment file creation for other services
+          for service in user-service restaurant-service order-service payment-service delivery-service; do
+            if [ ! -f ./services/\$service/.env.production ]; then
+              port=\$(case \$service in
+                user-service) echo 3001 ;;
+                restaurant-service) echo 3002 ;;
+                order-service) echo 3003 ;;
+                payment-service) echo 3004 ;;
+                delivery-service) echo 3005 ;;
+              esac)
+              db_name=food-delivery-\$(echo \$service | sed 's/-service//g')
+              echo \"PORT=\$port
+MONGO_URI=mongodb://localhost:27017/\$db_name
+JWT_SECRET=your_jwt_secret_key
+API_GATEWAY_URL=http://api-gateway:5000
+NODE_ENV=production\" > ./services/\$service/.env.production
+            fi
+          done
           
           # Make sure all shell scripts are executable
-          find . -name '*.sh' -exec chmod +x {} \; && \
+          find . -name '*.sh' -exec chmod +x {} \; || true
           
           # Build and start containers
           docker-compose up -d --build"
