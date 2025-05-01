@@ -29,7 +29,7 @@ services:
     ports:
       - "3001:3001"
     env_file:
-      - ./services/user-service/.env.docker
+      - ./services/user-service/.env.production
     depends_on:
       mongo:
         condition: service_healthy
@@ -52,7 +52,7 @@ services:
     ports:
       - "3002:3002"
     env_file:
-      - ./services/restaurant-service/.env.docker
+      - ./services/restaurant-service/.env.production
     depends_on:
       mongo:
         condition: service_healthy
@@ -75,7 +75,7 @@ services:
     ports:
       - "3003:3003"
     env_file:
-      - ./services/order-service/.env.docker
+      - ./services/order-service/.env.production
     depends_on:
       mongo:
         condition: service_healthy
@@ -98,7 +98,7 @@ services:
     ports:
       - "3004:3004"
     env_file:
-      - ./services/payment-service/.env.docker
+      - ./services/payment-service/.env.production
     depends_on:
       mongo:
         condition: service_healthy
@@ -121,7 +121,7 @@ services:
     ports:
       - "3005:3005"
     env_file:
-      - ./services/delivery-service/.env.docker
+      - ./services/delivery-service/.env.production
     depends_on:
       mongo:
         condition: service_healthy
@@ -136,7 +136,9 @@ services:
 
   # Stripe CLI (for webhook forwarding)
   stripe-cli:
-    image: stripe/stripe-cli:latest
+    build:
+      context: ./stripe-cli
+      dockerfile: Dockerfile
     container_name: food-delivery-stripe-cli
     restart: always
     command: listen --api-key ${STRIPE_API_KEY} --forward-to payment-service:3004/api/payments/webhook
@@ -155,7 +157,7 @@ services:
     ports:
       - "5000:5000"
     env_file:
-      - ./api-gateway/.env.docker
+      - ./api-gateway/.env.production
     depends_on:
       user-service:
         condition: service_healthy
@@ -184,9 +186,9 @@ services:
     container_name: food-delivery-frontend
     restart: always
     ports:
-      - "5173:5173"
+      - "80:5173"
     env_file:
-      - ./frontend/.env.docker
+      - ./frontend/.env.production
     depends_on:
       api-gateway:
         condition: service_healthy
@@ -200,4 +202,4 @@ volumes:
 networks:
   food-delivery-network:
     name: food-delivery-network
-    driver: bridge 
+    driver: bridge
