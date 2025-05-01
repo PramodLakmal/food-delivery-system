@@ -1,0 +1,36 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Install SSH key
+      uses: shimataro/ssh-key-action@v2
+      with:
+        key: ${{ secrets.EC2_SSH_KEY }}
+        known_hosts: 'just-a-placeholder-so-we-dont-get-errors'
+
+    - name: Adding Known Hosts
+      run: ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+      
+    - name: Deploy to EC2
+      run: |
+        # Copy files to EC2
+        scp -r . ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:~/food-delivery-system
+        
+        # Execute remote commands
+        ssh ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} "cd ~/food-delivery-system && \
+        
+        # Update MongoDB URI in environment files
+        sed -i 's|mongodb://mongo:27017|mongodb://localhost:27017|g' ./services/*/src/.env* && \
+        
+        # Build and start containers
+        docker-compose up -d --build"
