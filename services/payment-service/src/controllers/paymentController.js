@@ -47,7 +47,7 @@ exports.createPaymentIntent = async (req, res) => {
       amount,
       currency,
       paymentMethod: 'card',
-      status: 'pending',
+      status: 'ok',
       isCartPayment: !!cartPayment,
       stripePaymentIntentId: paymentIntent.id,
       stripeClientSecret: paymentIntent.client_secret

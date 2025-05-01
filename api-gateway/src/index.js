@@ -50,8 +50,8 @@ app.listen(PORT, () => {
   console.log(`API Gateway running on port ${PORT}`);
   console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
   console.log('Microservices:');
-  console.log(`- User Service: ${process.env.USER_SERVICE_URL || 'http://user-service:3001'}`);
-  console.log(`- Restaurant Service: ${process.env.RESTAURANT_SERVICE_URL || 'http://restaurant-service:3002'}`);
-  console.log(`- Order Service: ${process.env.ORDER_SERVICE_URL || 'http://order-service:3003'}`);
-  console.log(`- Delivery Service: ${process.env.DELIVERY_SERVICE_URL || 'http://delivery-service:3004'}`);
+  console.log(`- User Service: ${process.env.USER_SERVICE_URL || 'http://localhost:3001'}`);
+  console.log(`- Restaurant Service: ${process.env.RESTAURANT_SERVICE_URL || 'http://localhost:5001'}`);
+  console.log(`- Order Service: ${process.env.ORDER_SERVICE_URL || 'http://localhost:5003'}`);
+  console.log(`- Delivery Service: ${process.env.DELIVERY_SERVICE_URL || 'http://localhost:5005'}`);
 }); 

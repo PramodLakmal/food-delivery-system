@@ -1,15 +1,20 @@
-FROM node:18 as build
+FROM node:20-alpine
 
+# Set working directory
 WORKDIR /app
 
-COPY package*.json ./
+# Set Node options to fix crypto issue
+ENV NODE_OPTIONS="--experimental-global-webcrypto"
 
+# Copy package files and install dependencies
+COPY package*.json ./
 RUN npm install
 
+# Copy the rest of the application
 COPY . .
 
-# Expose the port the app runs on
+# Expose port for Vite dev server
 EXPOSE 5173
 
-# Command to run the app in development mode
+# Start the development server
 CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"] 

@@ -56,10 +56,8 @@ services:
     depends_on:
       mongo:
         condition: service_healthy
-      user-service:
-        condition: service_started
     healthcheck:
-      test: wget --no-verbose --tries=1 --spider http://localhost:3002 || exit 1
+      test: wget --no-verbose --tries=1 --spider http://localhost:3002/api/restaurants || exit 1
       interval: 10s
       timeout: 5s
       retries: 5
@@ -81,37 +79,8 @@ services:
     depends_on:
       mongo:
         condition: service_healthy
-      user-service:
-        condition: service_started
-      restaurant-service:
-        condition: service_started
     healthcheck:
-      test: wget --no-verbose --tries=1 --spider http://localhost:3003 || exit 1
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 20s
-    networks:
-      - food-delivery-network
-
-  # Delivery Service
-  delivery-service:
-    build:
-      context: ./services/delivery-service
-      dockerfile: Dockerfile
-    container_name: food-delivery-delivery-service
-    restart: always
-    ports:
-      - "3004:3004"
-    env_file:
-      - ./services/delivery-service/.env.docker
-    depends_on:
-      mongo:
-        condition: service_healthy
-      order-service:
-        condition: service_started
-    healthcheck:
-      test: wget --no-verbose --tries=1 --spider http://localhost:3004 || exit 1
+      test: wget --no-verbose --tries=1 --spider http://localhost:3003/health || exit 1
       interval: 10s
       timeout: 5s
       retries: 5
@@ -127,20 +96,52 @@ services:
     container_name: food-delivery-payment-service
     restart: always
     ports:
-      - "3005:3005"
+      - "3004:3004"
     env_file:
       - ./services/payment-service/.env.docker
     depends_on:
       mongo:
         condition: service_healthy
-      order-service:
-        condition: service_started
     healthcheck:
-      test: wget --no-verbose --tries=1 --spider http://localhost:3005 || exit 1
+      test: wget --no-verbose --tries=1 --spider http://localhost:3004/health || exit 1
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 20s
+    networks:
+      - food-delivery-network
+
+  # Delivery Service
+  delivery-service:
+    build:
+      context: ./services/delivery-service
+      dockerfile: Dockerfile
+    container_name: food-delivery-delivery-service
+    restart: always
+    ports:
+      - "3005:3005"
+    env_file:
+      - ./services/delivery-service/.env.docker
+    depends_on:
+      mongo:
+        condition: service_healthy
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:3005/health || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    networks:
+      - food-delivery-network
+
+  # Stripe CLI (for webhook forwarding)
+  stripe-cli:
+    image: stripe/stripe-cli:latest
+    container_name: food-delivery-stripe-cli
+    restart: always
+    command: listen --api-key ${STRIPE_API_KEY} --forward-to payment-service:3004/api/payments/webhook
+    environment:
+      - STRIPE_API_KEY=${STRIPE_API_KEY}
     networks:
       - food-delivery-network
 
@@ -157,17 +158,17 @@ services:
       - ./api-gateway/.env.docker
     depends_on:
       user-service:
-        condition: service_started
+        condition: service_healthy
       restaurant-service:
-        condition: service_started
+        condition: service_healthy
       order-service:
-        condition: service_started
-      delivery-service:
-        condition: service_started
+        condition: service_healthy
       payment-service:
-        condition: service_started
+        condition: service_healthy
+      delivery-service:
+        condition: service_healthy
     healthcheck:
-      test: curl -f http://localhost:5000/api || wget --no-verbose --tries=1 --spider http://localhost:5000/api || exit 0
+      test: wget --no-verbose --tries=1 --spider http://localhost:5000/api/health || exit 1
       interval: 10s
       timeout: 5s
       retries: 5
@@ -184,9 +185,11 @@ services:
     restart: always
     ports:
       - "5173:5173"
+    env_file:
+      - ./frontend/.env.docker
     depends_on:
       api-gateway:
-        condition: service_started
+        condition: service_healthy
     networks:
       - food-delivery-network
 

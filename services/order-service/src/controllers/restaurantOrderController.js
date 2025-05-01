@@ -22,7 +22,11 @@ const markOrderAsReady = async (req, res) => {
     }
 
     // Get restaurant details for pickup location
-    const restaurantResponse = await fetch(`${process.env.RESTAURANT_SERVICE_URL}/api/restaurants/${restaurantId}`);
+    const restaurantResponse = await fetch(`${process.env.API_GATEWAY_URL}/api/restaurants/${restaurantId}`, {
+      headers: {
+        'Authorization': req.headers.authorization
+      }
+    });
     if (!restaurantResponse.ok) {
       return res.status(500).json({ message: 'Failed to fetch restaurant details' });
     }
@@ -120,7 +124,7 @@ const markOrderAsReady = async (req, res) => {
       notes: order.specialInstructions || ''
     };
 
-    const deliveryResponse = await fetch(`${process.env.DELIVERY_SERVICE_URL}/api/deliveries`, {
+    const deliveryResponse = await fetch(`${process.env.API_GATEWAY_URL}/api/deliveries`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
