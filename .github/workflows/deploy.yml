@@ -25,14 +25,8 @@ jobs:
       
     - name: Prepare deployment files
       run: |
-        # Create a deployment directory and copy files there
-        mkdir -p deploy_temp
-        cp -r $(ls -A | grep -v ".git" | grep -v "node_modules" | xargs) deploy_temp/
-        
-        # Create a deployment archive
-        cd deploy_temp
-        tar -czf ../deploy.tar.gz .
-        cd ..
+        # Create a deployment archive excluding .git and node_modules
+        tar --exclude='.git' --exclude='node_modules' -czf deploy.tar.gz .
         
     - name: Deploy to EC2
       run: |
@@ -49,8 +43,6 @@ jobs:
           
           # Create necessary directories for env files if they dont exist
           mkdir -p ./services/user-service ./services/restaurant-service ./services/order-service ./services/payment-service ./services/delivery-service ./api-gateway ./frontend && \
-          
-
           
           # Make sure all shell scripts are executable
           find . -name "*.sh" -exec chmod +x {} \; || true && \
