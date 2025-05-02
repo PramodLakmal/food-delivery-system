@@ -34,8 +34,10 @@ jobs:
         # Copy zip file to EC2
         scp deploy.zip ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:~/food-delivery-system/
         
-        # Execute remote commands to unzip and set up
-        ssh ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} 'cd ~/food-delivery-system && \
+        # Execute remote commands to install unzip, extract files and set up
+        ssh ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} 'sudo apt-get update && \
+          sudo apt-get install -y unzip && \
+          cd ~/food-delivery-system && \
           unzip -o deploy.zip && \
           rm deploy.zip && \
           
