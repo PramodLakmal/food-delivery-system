@@ -135,17 +135,17 @@ services:
       - food-delivery-network
 
   # Stripe CLI (for webhook forwarding)
-  stripe-cli:
-    build:
-      context: ./stripe-cli
-      dockerfile: Dockerfile
-    container_name: food-delivery-stripe-cli
-    restart: always
-    command: listen --api-key ${STRIPE_API_KEY} --forward-to payment-service:3004/api/payments/webhook
-    environment:
-      - STRIPE_API_KEY=${STRIPE_API_KEY}
-    networks:
-      - food-delivery-network
+  #stripe-cli:
+   # build:
+     # context: ./stripe-cli
+     # dockerfile: Dockerfile
+   # container_name: food-delivery-stripe-cli
+  #  restart: always
+   # command: listen --api-key ${STRIPE_API_KEY} --forward-to payment-service:3004/api/payments/webhook
+  #  environment:
+   #   - STRIPE_API_KEY=${STRIPE_API_KEY}
+   # networks:
+   #   - food-delivery-network
 
   # API Gateway
   api-gateway:
