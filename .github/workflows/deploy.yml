@@ -34,12 +34,18 @@ jobs:
         # Copy zip file to EC2
         scp deploy.zip ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:~/food-delivery-system/
         
-        # Execute remote commands to install unzip, extract files and set up
+        # Execute remote commands to install unzip, fix docker-compose, extract files and set up
         ssh ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} 'sudo apt-get update && \
           sudo apt-get install -y unzip && \
           cd ~/food-delivery-system && \
           unzip -o deploy.zip && \
           rm deploy.zip && \
+          
+          # Fix docker-compose.yml to use the official Stripe CLI image instead of trying to build it
+          sed -i "s|build:\\n\\s*context: ./stripe-cli\\n\\s*dockerfile: Dockerfile|image: stripe/stripe-cli:latest|g" docker-compose.yml && \
+          
+          # Change API Gateway port from 5000 to 5001
+          sed -i "s/\"5000:5000\"/\"5001:5000\"/g" docker-compose.yml && \
           
           # Create necessary directories
           mkdir -p ./services/user-service ./services/restaurant-service ./services/order-service ./services/payment-service ./services/delivery-service ./api-gateway ./frontend && \
